@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Environment preview</title>
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #8fd3ff; }
+      canvas { width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
+      #info {
+        position: fixed; left: 10px; top: 8px; font: 600 13px/1.3 system-ui, sans-serif; color: #fff;
+        text-shadow: 0 1px 2px #0008; pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      Query params:
+        time=H        freeze the clock at H hours (omit for the live 8-minute cycle)
+        cycle=1       with time=H: start at H but keep cycling
+        quality=low|medium|high
+        q2=low|medium|high   emit settings:quality 300 ms after start (runtime switch test)
+        ssao=1        opt-in SSAO2 on high
+        view=game     follow-cam framing (radius 9, beta 1.15, fov 0.85)
+        hull=1        add inverted-hull outlined test figures + a double-sided flag
+        tm=0, con, exp, sat   look-dev overrides of the image-processing grade
+        alpha, beta, radius, ty   ArcRotateCamera placement (target y = ty)
+        hud=0         hide the info line (for screenshots)
+    -->
+    <canvas id="c"></canvas>
+    <div id="info"></div>
+    <script type="module" src="./environment.js"></script>
+  </body>
+</html>

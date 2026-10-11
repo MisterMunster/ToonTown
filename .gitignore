@@ -1,0 +1,26 @@
+# dependencies & build output
+node_modules/
+dist/
+*.tsbuildinfo
+.vite/
+
+# secrets - only the example is committed
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+/key
+/key.pub
+
+# logs & tooling
+*.log
+npm-debug.log*
+logs/
+coverage/
+.DS_Store
+.idea/
+.vscode/
+*.local

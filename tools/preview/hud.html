@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <title>HUD preview</title>
+  </head>
+  <body>
+    <!--
+      HUD preview. Query params:
+        screen=loading|start|hud|pause|toast|celebrate   (default hud)
+        touch=1      real on-screen touch controls (input.js) + body.touch-ui
+        zone=name    zone banner text (default "Town Square"; "Residential Lane" is the longest)
+        at=ms        when the showcase events fire (zone banner, item label, toasts…)
+        time=hours   clock value (default 16)   quality=low|medium|high
+        frame=WxH    render inside an iframe of that size (phone layouts)
+        screen=icons large gallery of every SVG icon
+    -->
+    <canvas id="renderCanvas" touch-action="none" tabindex="0"></canvas>
+    <div id="touch-root"></div>
+    <div id="hud-root"></div>
+    <script type="module">
+      // frame=390x844 renders the preview inside an iframe of that size, so phone
+      // layouts can be screenshotted (headless Chrome clamps windows to >= 500 px).
+      const params = new URLSearchParams(location.search);
+      const frame = /^(\d+)x(\d+)$/.exec(params.get("frame") || "");
+      if (frame) {
+        params.delete("frame");
+        const f = document.createElement("iframe");
+        f.src = `${location.pathname}?${params}`;
+        f.style.cssText = `position:fixed;left:0;top:0;border:0;width:${frame[1]}px;height:${frame[2]}px`;
+        document.body.replaceChildren(f);
+        document.body.style.background = "#000";
+      } else {
+        import("/tools/preview/hud.js");
+      }
+    </script>
+  </body>
+</html>

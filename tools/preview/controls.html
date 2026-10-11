@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <title>Controls preview — input / player / camera</title>
+    <style>
+      #info {
+        position: fixed; left: 10px; top: 8px; z-index: 40; padding: 6px 10px; border-radius: 10px;
+        font: 600 12px/1.35 ui-monospace, Menlo, monospace; color: #fffaf0; background: rgba(29, 43, 58, 0.72);
+        pointer-events: none; white-space: pre;
+      }
+      #info:empty { display: none; }
+    </style>
+  </head>
+  <body>
+    <!--
+      Test arena for the controls modules (real input.js / player.js / camera.js,
+      real character.js when it exists, stand-in capsule otherwise).
+
+      Query params:
+        auto=walk|jump|stairs|double|wall|tour   scripted autopilot feeding the input
+        freeze=S        stop simulating at S seconds (deterministic screenshots)
+        cam=intro|swoop intro orbit / intro then swoop to the hero at t=1 s
+        touch=1         force the on-screen touch controls
+        press=ne,jump,run  synthesize pointer presses on the touch controls (D-pad dir: n ne e se s sw w nw)
+        alpha=, beta=, radius=  override the camera pose after the first frame
+        env=1           use the real environment module (lights/sky/shadows) if present
+        hud=0           hide the debug panel
+      Keyboard: arrows/WASD move, Shift run, Space jump (double jump in the air), C reset camera.
+    -->
+    <canvas id="renderCanvas" touch-action="none" tabindex="0"></canvas>
+    <div id="touch-root"></div>
+    <div id="hud-root"><div id="info"></div></div>
+    <script type="module" src="./controls.js"></script>
+  </body>
+</html>

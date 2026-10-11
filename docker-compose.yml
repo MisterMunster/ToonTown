@@ -1,0 +1,36 @@
+# Toon Town - run it with:
+#   cp .env.example .env      # then set GAME_PASSWORD (and SESSION_SECRET)
+#   docker compose up -d --build
+# and open http://localhost:8080
+services:
+  toon-town:
+    build: .
+    image: toon-town:latest
+    # Host side defaults to 8080 on all interfaces. Behind a reverse proxy on the
+    # same machine, set PUBLISH=127.0.0.1:8080 in .env so only the proxy can reach it.
+    ports:
+      - "${PUBLISH:-8080}:8080"
+    env_file: .env # GAME_PASSWORD is required; SESSION_SECRET is recommended
+    restart: unless-stopped
+    init: true # tiny init as PID 1: forwards signals, reaps zombies
+
+    # Hardening: nothing in the container needs to write to disk, gain
+    # privileges or use Linux capabilities.
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    deploy:
+      resources:
+        limits:
+          memory: 256M # Node + Express idles around 50 MB
+          pids: 100
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

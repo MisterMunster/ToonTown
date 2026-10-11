@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FX + coins preview</title>
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #8fd3ff; }
+      canvas { width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
+      #info {
+        position: fixed; left: 10px; top: 8px; font: 600 13px/1.3 system-ui, sans-serif; color: #fff;
+        text-shadow: 0 1px 2px #0008; pointer-events: none; white-space: pre;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      Query params (all optional):
+        fx=land|jump|double|run|coin|confetti|all   effect(s) to trigger at frame `start`
+        walk=1        hero walks along the coin row and collects coins (real pickup + pop)
+        start=N       rendered frame to trigger the effect (default 4)
+        at=N          freeze N rendered frames after the trigger (mid-animation screenshot)
+        step=K        simulated 1/60 s steps per rendered frame (default 2)
+        impact=V      landing impact m/s (default 11)
+        time=H        hour of day for the environment (default 14; 22 = night)
+        view=coin     close-up on a coin   view=wide  overview
+        alpha, beta, radius, ty   ArcRotateCamera placement
+        quality=low|medium|high
+        audio=1       run the OfflineAudioContext audio test and log peak/RMS per sound
+        hud=0         hide the info line
+    -->
+    <canvas id="c"></canvas>
+    <div id="info"></div>
+    <script type="module" src="./fx.js"></script>
+  </body>
+</html>

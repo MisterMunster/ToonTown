@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Town Preview</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #8fd3ff;
+      }
+      canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+        outline: none;
+      }
+      #info {
+        position: fixed;
+        left: 8px;
+        top: 8px;
+        font: 12px/1.3 monospace;
+        color: #1d2b3a;
+        background: rgba(255, 255, 255, 0.7);
+        padding: 4px 6px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <div id="info"></div>
+    <!--
+      Town module preview with a stand-in environment.
+      ?view=overview|square|park|street|market|hall|edge|playground|top|east
+      &night=1   full night (nightFactor 1)     &time=17.5  clock time (hours)
+      &q=low|medium|high   &cam=x,y,z,tx,ty,tz  custom camera
+      &hero=0    hide the scale stand-in       &bloom=0    disable bloom
+    -->
+    <script type="module" src="./town.js"></script>
+  </body>
+</html>

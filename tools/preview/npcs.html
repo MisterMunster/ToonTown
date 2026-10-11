@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NPCs preview</title>
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #8fd3ff; }
+      canvas { width: 100%; height: 100%; display: block; outline: none; touch-action: none; }
+      #info { position: fixed; left: 8px; top: 6px; font: 12px/1.3 ui-monospace, monospace; color: #1d2b3a; background: rgba(255,255,255,.65); padding: 4px 6px; border-radius: 6px; white-space: pre; }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <div id="info"></div>
+    <!--
+      Visual test page for src/game/npcs.js.
+        real=1            use the real environment + town (default: a small fake town)
+        quality=low|medium|high
+        cam=town|greet|game|face|sky|park|dog|bird|bfly|top|hero   camera preset
+                          (greet/game/face frame the first greeter; bird/bfly take bi=index)
+        hx,hz,hh          hero position / heading (default: just outside the plaza loop)
+        t=seconds         simulate this long before showing (then keeps running unless freeze=1)
+        greet=1           simulate until the first greeting + gd seconds (default 0.7), then freeze
+        time=H            time of day (real=1 only), night=0..1 (fake town)
+        freeze=1          stop simulating after the warm-up (for crisp screenshots)
+        alpha,beta,radius override the camera
+    -->
+    <script type="module" src="./npcs.js"></script>
+  </body>
+</html>

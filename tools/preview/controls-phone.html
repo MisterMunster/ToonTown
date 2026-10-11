@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Controls preview — phone frame</title>
+    <style>
+      html, body { margin: 0; background: #1d2b3a; overflow: hidden; }
+      iframe { display: block; border: 0; }
+    </style>
+  </head>
+  <body>
+    <!--
+      Headless Chrome can't make a viewport narrower than 500 px, so this page
+      hosts controls.html in a phone-sized iframe. Params: w, h (default 390×844),
+      landscape=1 (swap the defaults: 844×390, a phone turned sideways),
+      src (page to frame instead of controls.html, e.g. src=/ for the real game);
+      every other param is forwarded, e.g.
+        tools/shot.sh "/tools/preview/controls-phone.html?press=ne,jump" out.png 20000 500x900
+        tools/shot.sh "/tools/preview/controls-phone.html?src=/&autostart=1&quality=low" out.png 35000 500x900
+        tools/shot.sh "/tools/preview/controls-phone.html?src=/&autostart=1&quality=low&landscape=1" out.png 60000 900x500
+        tools/shot.sh "/tools/preview/controls-phone.html?src=/tools/preview/hud.html&screen=toast&landscape=1" out.png 20000 900x500
+      (Safe-area insets can't be faked in an iframe; tools/preview/hud.html under
+      DevTools device emulation, or CDP Emulation.setSafeAreaInsetsOverride, can.)
+    -->
+    <iframe id="phone"></iframe>
+    <script>
+      const p = new URLSearchParams(location.search);
+      const landscape = p.get("landscape") === "1";
+      const w = Number(p.get("w")) || (landscape ? 844 : 390);
+      const h = Number(p.get("h")) || (landscape ? 390 : 844);
+      const src = p.get("src") || "./controls.html";
+      p.delete("w");
+      p.delete("h");
+      p.delete("src");
+      p.delete("landscape");
+      if (!p.has("touch")) p.set("touch", "1");
+      const f = document.getElementById("phone");
+      f.width = w;
+      f.height = h;
+      f.src = src + "?" + p.toString();
+    </script>
+  </body>
+</html>

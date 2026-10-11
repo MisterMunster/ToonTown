@@ -1,0 +1,32 @@
+# Caddy: automatic HTTPS (Let's Encrypt) in front of the Toon Town container.
+# SITE_DOMAIN comes from the server's .env (e.g. gamedemo.strategicai.solutions).
+# Caddy also redirects http:// to https:// on its own.
+{$SITE_DOMAIN} {
+	# The app serves precompressed assets itself; this only compresses the rest
+	# (e.g. the login page). Already-encoded responses pass through untouched.
+	encode zstd gzip
+
+	# The app sends all security headers itself (CSP, HSTS, ...); Caddy only
+	# stops announcing itself.
+	header {
+		-Server
+		-Via
+	}
+
+	# Nothing here takes uploads (the login form is a few bytes).
+	request_body {
+		max_size 64KB
+	}
+
+	# Caddy replaces any X-Forwarded-For / -Proto a client sends with what it
+	# really saw (it trusts no upstream proxies), and the app trusts private
+	# Docker networks, so the app sees each friend's real IP (per-IP login
+	# rate limit) and HTTPS (Secure cookie + HSTS).
+	reverse_proxy toon-town:8080
+
+	# Access log. Caddy blanks Cookie/Authorization values here by default.
+	log {
+		output stdout
+		format console
+	}
+}

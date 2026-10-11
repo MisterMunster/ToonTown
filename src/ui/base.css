@@ -1,0 +1,53 @@
+/* Global page reset — the canvas fills the screen; HUD/touch layers sit on top. */
+:root {
+  --ui-font: "Fredoka", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ui-primary: #ffb703;
+  --ui-accent: #fb8500;
+  --ui-dark: #1d2b3a;
+  --ui-light: #fffaf0;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #8fd3ff;
+  font-family: var(--ui-font);
+  color: var(--ui-dark);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+#renderCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  outline: none;
+  touch-action: none;
+}
+#hud-root, #touch-root {
+  position: fixed;
+  inset: 0;
+  pointer-events: none; /* children opt back in with pointer-events: auto */
+}
+#touch-root { z-index: 20; }
+#hud-root { z-index: 30; }
+.fatal-error {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  background: #1d2b3a;
+  color: #fffaf0;
+  font-family: var(--ui-font);
+}

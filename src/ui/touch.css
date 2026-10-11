@@ -1,0 +1,174 @@
+/* On-screen touch controls: cross D-pad (left), JUMP + RUN (right).
+   Chunky glossy cartoon style matching the HUD: cream fills, 3px navy
+   outlines, soft drop shadows, orange when pressed. Only the controls take
+   pointer events — the rest of #touch-root lets touches reach the canvas. */
+
+/* Control sizes live on :root so the HUD (hud.css) can keep the hotbar clear
+   of them. They scale with the short side of the screen (vmin), so a phone
+   turned sideways keeps thumb-sized controls instead of maxing them out. */
+:root {
+  --tc-dpad-size: clamp(116px, 36vmin, 156px);
+  --tc-jump-size: clamp(80px, 23vmin, 100px);
+  --tc-run-size: clamp(56px, 16vmin, 70px);
+  --tc-edge: 18px;
+}
+.tc-touch {
+  --tc-ink: var(--ui-dark, #1d2b3a);
+  --tc-hot: var(--ui-accent, #fb8500);
+  --tc-cream: #fff6e3;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-family: var(--ui-font, system-ui, sans-serif);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.tc-touch.is-ready { opacity: 1; }
+/* Hidden behind the loading / title screen (it would show through the title's
+   see-through backdrop and crowd the controls card); fades in with the HUD. */
+body:has(.tt-hud:not([data-phase="game"])) .tc-touch { opacity: 0; }
+
+/* ---- D-pad --------------------------------------------------------------- */
+.tc-dpad {
+  position: absolute;
+  left: calc(env(safe-area-inset-left, 0px) + var(--tc-edge));
+  bottom: calc(env(safe-area-inset-bottom, 0px) + var(--tc-edge));
+  width: var(--tc-dpad-size);
+  height: var(--tc-dpad-size);
+  pointer-events: auto;
+  touch-action: none;
+  perspective: 420px;
+  -webkit-tap-highlight-color: transparent;
+}
+/* Soft round "socket" the pad sits in — hints at the touch area. */
+.tc-dpad-socket {
+  position: absolute;
+  inset: -7%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 45%, rgba(255, 250, 240, 0.34), rgba(29, 43, 58, 0.16) 70%);
+  border: 2px solid rgba(29, 43, 58, 0.18);
+  box-shadow: inset 0 3px 10px rgba(29, 43, 58, 0.12);
+}
+.tc-dpad-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 6px 8px rgba(29, 43, 58, 0.28));
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition: transform 0.09s ease-out;
+}
+.tc-dpad-side { fill: #c9a86f; stroke: var(--tc-ink); stroke-width: 3; stroke-linejoin: round; }
+.tc-dpad-face { fill: url(#tcDpadFace); }
+.tc-arm { fill: transparent; transition: fill 0.06s linear; }
+.tc-arm.is-on { fill: url(#tcDpadHot); }
+/* Bright rim just inside the top edges: reads as a glossy plastic bevel. */
+.tc-bevel { fill: none; stroke: #ffffff; stroke-width: 5; stroke-linejoin: round; opacity: 0.85; }
+.tc-hub {
+  fill: #f4e3c1;
+  stroke: rgba(29, 43, 58, 0.25);
+  stroke-width: 2;
+}
+.tc-arrow {
+  fill: var(--tc-ink);
+  stroke: var(--tc-ink);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  opacity: 0.85;
+}
+.tc-dpad-outline {
+  fill: none;
+  stroke: var(--tc-ink);
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+}
+
+/* ---- Action buttons -------------------------------------------------------- */
+.tc-actions {
+  position: absolute;
+  right: calc(env(safe-area-inset-right, 0px) + var(--tc-edge));
+  bottom: calc(env(safe-area-inset-bottom, 0px) + var(--tc-edge));
+  width: calc(var(--tc-jump-size) + var(--tc-run-size) * 0.72);
+  height: calc(var(--tc-jump-size) + var(--tc-run-size) * 0.86);
+  pointer-events: none;
+}
+.tc-btn {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  border-radius: 50%;
+  border: 3px solid var(--tc-ink);
+  background:
+    radial-gradient(ellipse 62% 36% at 50% 22%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 70%),
+    linear-gradient(180deg, #fffdf6 0%, var(--tc-cream) 55%, #f0dbb0 100%);
+  color: var(--tc-ink);
+  font: 700 15px/1 var(--ui-font, system-ui, sans-serif);
+  letter-spacing: 0.04em;
+  box-shadow:
+    0 5px 0 var(--tc-ink),
+    0 10px 16px rgba(29, 43, 58, 0.32);
+  pointer-events: auto;
+  touch-action: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  transition: transform 0.07s ease-out, box-shadow 0.07s ease-out, background 0.07s linear, color 0.07s linear;
+}
+.tc-btn:focus-visible { box-shadow: 0 5px 0 var(--tc-ink), 0 0 0 4px rgba(255, 183, 3, 0.7); }
+.tc-icon { width: 34%; height: auto; fill: currentColor; }
+.tc-btn span { pointer-events: none; }
+
+.tc-jump {
+  right: 0;
+  bottom: 6px;
+  width: var(--tc-jump-size);
+  height: var(--tc-jump-size);
+  font-size: calc(var(--tc-jump-size) * 0.17);
+}
+.tc-run {
+  left: 0;
+  top: 0;
+  width: var(--tc-run-size);
+  height: var(--tc-run-size);
+  font-size: calc(var(--tc-run-size) * 0.2);
+}
+.tc-run .tc-icon { width: 38%; }
+
+.tc-btn.is-pressed,
+.tc-btn.is-on {
+  background:
+    radial-gradient(ellipse 62% 36% at 50% 22%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 70%),
+    linear-gradient(180deg, #ffc163 0%, var(--tc-hot) 100%);
+  color: #fffaf0;
+}
+.tc-btn.is-pressed {
+  transform: translateY(4px) scale(0.96);
+  box-shadow:
+    0 1px 0 var(--tc-ink),
+    0 4px 8px rgba(29, 43, 58, 0.28);
+}
+.tc-run.is-on::after {
+  /* little "lit" pip so the toggle state reads at a glance */
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: -3px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #ffe27a;
+  border: 3px solid var(--tc-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tc-dpad-svg, .tc-btn, .tc-touch { transition: none; }
+}

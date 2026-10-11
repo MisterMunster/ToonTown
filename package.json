@@ -1,0 +1,26 @@
+{
+  "name": "toon-town",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Toon Town - a Babylon.js 3D demo: a cartoon character exploring a little town",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node tools/precompress.mjs",
+    "start": "node server/server.js",
+    "preview": "npm run build && npm start",
+    "smoke": "node tools/smoke-run.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@babylonjs/core": "^9.30.0",
+    "@babylonjs/materials": "^9.30.0",
+    "@fontsource/fredoka": "^5.3.0",
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "vite": "^8.3.4"
+  }
+}
