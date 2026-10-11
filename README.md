@@ -1,16 +1,66 @@
-# Toon Town
+<h1 align="center">Toon Town</h1>
 
-A tiny, cheerful 3D town that runs in your browser. You play **Pip**, a cartoon
-hero who can stroll, sprint and double-jump around a toy-like town. There are
-houses, shops, a fountain square and a park, townsfolk who wave hello, and
-shiny coins to find (some hidden on top of crates and platforms). The sun sets,
-the street lamps switch on, and the town glows under the moon.
+<p align="center">
+  <b>A tiny, cozy 3D adventure that runs in your browser.</b><br>
+  Built with Babylon.js 9 &middot; 100% procedural: no models, textures or sound files.
+</p>
 
-Built with **Babylon.js 9**. Everything you see and hear is generated in code,
-with no downloaded models, textures or sound files. It aims for a smooth 60 fps
-on a laptop and also works on phones.
+<p align="center">
+  <img src="docs/screenshots/title.jpg" alt="Toon Town title screen: a colourful cartoon town square with a fountain, shops and bunting behind the TOON TOWN logo and PLAY button" width="100%">
+</p>
 
----
+You play **Pip**, a cartoon kid in a red cap, exploring a cheerful toy-like town.
+Stroll, sprint and double-jump (with a somersault) around a fountain square,
+painted shopfronts and a leafy park. Chat with the neighbours, hunt for the 38
+coins hidden around town (some only reachable by jumping), and watch the sun set
+as the street lamps flicker on.
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/gameplay.jpg" alt="Pip on the town square while Mabel greets him with a speech bubble"></td>
+    <td width="50%"><img src="docs/screenshots/golden-hour.jpg" alt="The town square at golden hour with a pink sunset sky behind the Town Hall"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/night.jpg" alt="The town at night with lit windows, glowing string lights and a glowing fountain"></td>
+    <td><img src="docs/screenshots/phone-landscape.jpg" alt="Phone in landscape with the on-screen D-pad, Run and Jump buttons"></td>
+  </tr>
+</table>
+
+## Features
+
+- **A hand-crafted town, built entirely in code.** A fountain square with frog
+  statues and bunting, painted shop signs (Bakery, Café, Toy Shop, Books,
+  Flowers, an Ice Cream parlour with a giant cone on the roof), a Town Hall
+  whose clock shows the in-game time, and Maple Park with a pond, a bridge,
+  stepping stones and a playground. Rolling hills with a windmill and a
+  drifting hot-air balloon frame the edges.
+- **A lively hero.** Pip is a procedurally modelled and animated character with
+  blinking eyes, squash-and-stretch jumps, a forward somersault on the double
+  jump, and feet planted by distance travelled, so they don't slide.
+- **A town that's alive.** Ten neighbours stroll the sidewalks, turn to wave
+  and greet you in speech bubbles, while birds circle overhead, butterflies
+  flutter around the flower beds and a friendly dog roams the park.
+- **Day and night.** A full day passes in about 8 minutes: golden hour, a
+  coral-and-violet dusk, then a starry moonlit night with glowing windows,
+  street lamps and string lights. Press **N** to switch between cycle, day,
+  sunset and night.
+- **Game-style HUD.** Player card, coin counter, a rotating minimap with
+  compass, a clock, zone banners, toasts, a pause menu with settings, and an
+  8-slot item hotbar (sword, shield, potion, bubble wand, golden key, map,
+  camera, fishing rod). The items are just for show for now.
+- **Juice.** Dust puffs, sparkles, confetti, spinning coins that pull towards
+  you, and fully synthesised sound effects, birdsong, crickets and a chill
+  procedural soundtrack.
+- **Play it anywhere.** Keyboard and mouse, gamepads (D-pad or sticks), and an
+  on-screen D-pad with Jump and Run buttons on phones and tablets, in portrait
+  or landscape. Three quality levels keep it smooth from phones to desktops.
+- **Ready to share.** A small Express server puts the game behind a friendly
+  "invite-only" password page, packaged as a hardened Docker image with
+  automatic HTTPS via Caddy.
+
+<p align="center">
+  <img src="docs/screenshots/phone-portrait.jpg" alt="Toon Town on a phone in portrait with touch controls" width="260">
+</p>
 
 ## Controls
 
@@ -25,6 +75,18 @@ on a laptop and also works on phones.
 | Extras | N time of day, M mute, H help | | |
 
 The hotbar items are just for show for now ("coming soon!").
+
+## How it was built
+
+Toon Town was designed, written, tested and deployed with
+[Claude Code](https://claude.com/claude-code). Claude split the game into
+modules (environment, town, character, controls, HUD, NPCs, effects and audio,
+server), had parallel sub-agents build each one against a shared contract
+([ARCHITECTURE.md](ARCHITECTURE.md)), then integrated, reviewed and verified
+everything end to end. That included a headless NullEngine smoke test,
+headless-Chrome WebGL screenshots of every module, an automated real-browser
+play-through, a security review of the login server, and a Docker deployment
+behind HTTPS.
 
 ---
 
@@ -290,8 +352,14 @@ server/
 tools/
   precompress.mjs          writes .br/.gz files after `vite build`
   smoke-run.mjs            headless smoke test (Babylon NullEngine)
+  server-test.mjs          login/security tests for the server (node:test)
   shot.sh                  headless-Chrome screenshot of any page
   preview/                 per-module visual test pages
+deploy/
+  compose.prod.yml         adds Caddy (automatic HTTPS) in front of the game
+  Caddyfile                reverse proxy + certificate config
+  deploy.sh                one-command upload, build and restart on the server
+docs/screenshots/          images used in this README
 Dockerfile                 two-stage build -> small non-root runtime image
 docker-compose.yml         hardened service definition
 .env.example               every setting, documented
@@ -341,6 +409,7 @@ with a 500x900 window.
 npm run smoke                              # headless build + ~10 s of simulated play; must print SMOKE OK
 npm run smoke -- --only town,player        # test specific modules, stub the rest
 npx vite build                             # bundling / import check
+node tools/server-test.mjs                 # login, cookies, rate limits, headers, path traversal
 tools/shot.sh "/?autostart=1&time=21" /tmp/night.png 60000   # WebGL screenshot (needs `npm run dev`)
 ```
 
